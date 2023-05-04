@@ -25,7 +25,7 @@ class java::config ( ) {
         # The standard packages install alternatives, custom packages do not
         # For the stanard packages java::params needs these added.
         if $java::use_java_package_name != $java::default_package_name {
-          $command_redhat = ['alternatives', '--install', '/usr/bin/java', 'java', $java::use_java_alternative_path, '20000']
+          $command_redhat = join(['alternatives', '--install', '/usr/bin/java', 'java', $java::use_java_alternative_path, '20000'], " ")
           $unless_redhat = "alternatives --display java | grep -q ${shell_escape($java::use_java_alternative_path)}"
 
           exec { 'create-java-alternatives':
@@ -35,8 +35,8 @@ class java::config ( ) {
             before  => Exec['update-java-alternatives'],
           }
         }
-        $command_default = ['alternatives', '--set', 'java', $java::use_java_alternative_path]
-        $unless_default = [['test', '/etc/alternatives/java', '-ef', $java::use_java_alternative_path]]
+        $command_default = join(['alternatives', '--set', 'java', $java::use_java_alternative_path], " ")
+        $unless_default = join(['test', '/etc/alternatives/java', '-ef', $java::use_java_alternative_path], " ")
 
         exec { 'update-java-alternatives':
           path    => '/usr/bin:/usr/sbin',
